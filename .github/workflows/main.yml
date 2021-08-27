@@ -1,0 +1,27 @@
+name: main
+on: workflow_dispatch
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cleanup space
+      uses: rokibhasansagar/slimhub_actions@main
+
+    - name: Setup
+      run: |
+       sudo apt -qq update &> /dev/null
+       sudo apt -qq upgrade &> /dev/null
+       sudo apt -qq autoremove &> /dev/null
+       sudo apt -qq install python3-setuptools &> /dev/null
+       curl -s https://raw.githubusercontent.com/AndroidDumps/dumpyara/master/setup.sh | bash &> /dev/null
+
+    - name: Dump
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          URL: ${{ secrets.URL }}
+      run: |
+        bash extract_and_push.sh
